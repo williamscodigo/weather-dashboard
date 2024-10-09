@@ -1,13 +1,96 @@
+
 import dotenv from 'dotenv';
 dotenv.config();
 
+/*
 // TODO: Define an interface for the Coordinates object
+interface Coordinates {
+  lat: number;
+  lon: number;
+}
 
 // TODO: Define a class for the Weather object
+class Weather {
+  city: string;
+  date: string;
+  icon: string;
+  iconDesc: string;
+  tempF: number;
+  windSpeed: number;
+  humidity: number;
+
+  constructor(
+  city: string,
+  date: string,
+  icon: string,
+  iconDesc: string,
+  tempF: number,
+  windSpeed: number,
+  humidity: number
+  ) {
+    this.city = city;
+    this.date = date;
+    this.icon = icon;
+    this.iconDesc = iconDesc;
+    this.tempF = tempF;
+    this.windSpeed = windSpeed;
+    this.humidity = humidity;
+  }
+}
+  */
 
 // TODO: Complete the WeatherService class
 class WeatherService {
   // TODO: Define the baseURL, API key, and city name properties
+  //private baseURL = `${process.env.API_BASE_URL}`;
+  //private apiKey = `${process.env.API_KEY}`;
+  protected cityName: string = '';
+  
+  //set method for cityName
+  set(cityName: string) {
+    this.cityName = cityName;
+  }
+
+  logCity() {
+    console.log(this.cityName);
+  }
+
+  async getCoodinates() {
+
+    const url = `http://api.openweathermap.org/geo/1.0/direct?q=${this.cityName}&limit=1&appid=${process.env.API_KEY}`;
+
+    try {
+      const response = await fetch(url);
+
+      const coordinates = await response.json();
+
+      return coordinates;
+    } catch (err) {
+      console.log('Error:', err);
+      return err;
+    }
+
+  }
+
+
+  async getData(lat: number, lon: number) {
+  
+    const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${process.env.API_KEY}`;
+
+    try {
+      const response = await fetch(url);
+
+      const data = await response.json();
+
+      return data;
+    } catch (err) {
+      console.log('Error:', err);
+      return err;
+    }
+
+  }
+
+
   // TODO: Create fetchLocationData method
   // private async fetchLocationData(query: string) {}
   // TODO: Create destructureLocationData method
@@ -29,3 +112,4 @@ class WeatherService {
 }
 
 export default new WeatherService();
+
