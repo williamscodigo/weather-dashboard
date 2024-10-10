@@ -2,8 +2,9 @@
 import { Router, type Request, type Response } from 'express';
 const router = Router();
 
-// import HistoryService from '../../service/historyService.js';
-import WeatherService from '../../service/weatherService.js';
+
+import historyService from '../../service/historyService.js';
+import weatherService from '../../service/weatherService.js';
 
 // TODO: POST Request with city name to retrieve weather data
 
@@ -13,34 +14,32 @@ router.post('/', async (req: Request, res: Response) => {
  
   if(req.body) {
     //than set city property value
-    WeatherService.set(cityName);
+    weatherService.set(cityName);
 
     //get coordinates - lat and lon
-    const coordinates = await WeatherService.getCoodinates();
+    const coordinates = await weatherService.getCoodinates();
 
     //get actual weather data
-    const data = await WeatherService.getData(coordinates[0].lat, coordinates[0].lon);
-    
-    
-    //respond with data - NOTE: WE NEED TO TRANSFORM SHAPE THE DATA INTO WHAT THE FROM-END IS EXPECTING - this res.json(data) might need to be done below - using historyService to store current city weather info - refer to week9 mini project for example.
+    const data = await weatherService.getData(coordinates[0].lat, coordinates[0].lon);
 
-    //res.json(data)
-  
+    //add city to history
+    historyService.addCity(cityName);
+    
+    
+    //respond with data 
     res.json(data);
 
   }else {
       res.send('request error!');
   }
-      
-  // TODO: save city to search history
-
-  //than repond to frontend with data
-  //res.json(frontendExpectedObjArray)
 });
 
 
 // TODO: GET search history
-//router.get('/history', async (req: Request, res: Response) => {});
+router.get('/history', async (_req: Request, res: Response) => {
+  const cities = await historyService.getCities();
+  res.json(cities);
+});
 
 // * BONUS TODO: DELETE city from search history
 //router.delete('/history/:id', async (req: Request, res: Response) => {});

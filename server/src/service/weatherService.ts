@@ -54,6 +54,11 @@ class WeatherService {
     this.cityName = cityName;
   }
 
+  //get method for cityName
+  get() {
+    return this.cityName;
+  }
+
   logCity() {
     console.log(this.cityName);
   }
