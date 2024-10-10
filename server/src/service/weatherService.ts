@@ -8,6 +8,7 @@ interface Coordinates {
   lat: number;
   lon: number;
 }
+*/
 
 // TODO: Define a class for the Weather object
 class Weather {
@@ -37,7 +38,9 @@ class Weather {
     this.humidity = humidity;
   }
 }
-  */
+
+//let weatherArray: Weather[] = [];
+
 
 // TODO: Complete the WeatherService class
 class WeatherService {
@@ -74,6 +77,8 @@ class WeatherService {
 
 
   async getData(lat: number, lon: number) {
+    //note: this might need to be define in global scope
+    let weatherArray: Weather[] = [];
   
     const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${process.env.API_KEY}`;
 
@@ -82,7 +87,42 @@ class WeatherService {
 
       const data = await response.json();
 
-      return data;
+      const originalDataArray = data.list;
+
+      //break into different days - time noon
+      let dataArray: Weather[] = [];
+
+      //push first weather obj into array
+      dataArray.push(originalDataArray[0]);
+
+      //search for noon temp - and only push the obj that match
+      for(let i = 1; i < originalDataArray.length; i++){
+        let iterationDate = originalDataArray[i].dt_txt;
+        if(iterationDate.slice(-8) === '12:00:00') dataArray.push(originalDataArray[i]);
+      }
+
+  
+      //loop array to create Weather obj to send to front-end
+      dataArray.map((item: any) => {
+
+        const date = new Date(item.dt_txt.slice(0, 10).replace(/-/g, "/"));
+        const localeString = date.toLocaleDateString();
+        console.log(localeString); 
+
+        const weather = new Weather(
+          this.cityName,
+          localeString,
+          item.weather[0].icon,
+          item.weather[0].description,
+          item.main.temp,
+          item.wind.speed,
+          item.main.humidity
+        );
+        weatherArray.push(weather);
+      });
+
+      //return data;
+      return weatherArray;
     } catch (err) {
       console.log('Error:', err);
       return err;

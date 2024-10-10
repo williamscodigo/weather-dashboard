@@ -4,50 +4,29 @@ const router = Router();
 
 // import HistoryService from '../../service/historyService.js';
 import WeatherService from '../../service/weatherService.js';
-import weatherService from '../../service/weatherService.js';
 
 // TODO: POST Request with city name to retrieve weather data
 
 router.post('/', async (req: Request, res: Response) => {
   // TODO: GET weather data from city name
   const { cityName } = req.body;
-  console.log('back-end cityName', cityName);
+ 
   if(req.body) {
     //than set city property value
     WeatherService.set(cityName);
-    weatherService.logCity();
 
-    /*
-[
-    {
-        "name": "Queens County",
-        "local_names": {
-            "en": "Queens County",
-            "ru": "округ Куинс"
-        },
-        "lat": 40.7135078,
-        "lon": -73.8283132,
-        "country": "US",
-        "state": "New York"
-    }
-]
-    */
+    //get coordinates - lat and lon
     const coordinates = await WeatherService.getCoodinates();
-    console.log('coordinates', coordinates[0].lat, coordinates[0].lon);
 
-    //coordinates[0].lat, coordinates[0].lon
+    //get actual weather data
     const data = await WeatherService.getData(coordinates[0].lat, coordinates[0].lon);
     
     
+    //respond with data - NOTE: WE NEED TO TRANSFORM SHAPE THE DATA INTO WHAT THE FROM-END IS EXPECTING - this res.json(data) might need to be done below - using historyService to store current city weather info - refer to week9 mini project for example.
+
+    //res.json(data)
+  
     res.json(data);
-
-
-    //respon api call
-    //res.json({"cityName": cityName});
-
-    //than call method to make request to geo->get city (lat, lon)
-
-    //than call methods to make request to weather forecast
 
   }else {
       res.send('request error!');
@@ -56,6 +35,7 @@ router.post('/', async (req: Request, res: Response) => {
   // TODO: save city to search history
 
   //than repond to frontend with data
+  //res.json(frontendExpectedObjArray)
 });
 
 
