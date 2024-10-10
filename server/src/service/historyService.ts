@@ -23,7 +23,8 @@ class HistoryService {
     try {
       const data = await fs.readFile('db/searchHistory.json', 'utf-8');
       const cities = JSON.parse(data);
-      return cities.map((city: { name: string; id: string }) => new City(city.name, uuidv4()));
+      //return cities.map((city: { name: string; id: string }) => new City(city.name, uuidv4()));
+      return cities;
     } catch (error) {
       console.error('Error reading the file:', error);
       return [];

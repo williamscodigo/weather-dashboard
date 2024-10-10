@@ -111,8 +111,7 @@ class WeatherService {
       dataArray.map((item: any) => {
 
         const date = new Date(item.dt_txt.slice(0, 10).replace(/-/g, "/"));
-        const localeString = date.toLocaleDateString();
-        console.log(localeString); 
+        const localeString = date.toLocaleDateString(); 
 
         const weather = new Weather(
           this.cityName,

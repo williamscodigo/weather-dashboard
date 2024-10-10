@@ -19,7 +19,7 @@ router.post('/', async (req: Request, res: Response) => {
     //get coordinates - lat and lon
     const coordinates = await weatherService.getCoodinates();
 
-    //get actual weather data
+    //get weather data
     const data = await weatherService.getData(coordinates[0].lat, coordinates[0].lon);
 
     //add city to history
@@ -42,7 +42,18 @@ router.get('/history', async (_req: Request, res: Response) => {
 });
 
 // * BONUS TODO: DELETE city from search history
-//router.delete('/history/:id', async (req: Request, res: Response) => {});
+router.delete('/history/:id', async (req: Request, res: Response) => {
+  try {
+    if (!req.params.id) {
+      res.status(400).json({ msg: 'State id is required' });
+    }
+    await historyService.removeCity(req.params.id);
+    res.json({ success: 'State successfully removed from search history' });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+});
 
 export default router;
 
