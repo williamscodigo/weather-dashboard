@@ -15,7 +15,7 @@ The application make calls to the OpenWeather API and renders data in the browse
 
 ## Usage
 
-This application is live at:
+This application is live at: [https://weather-dashboard-k6u9.onrender.com/](https://weather-dashboard-k6u9.onrender.com/)
 
 note: you can also follow the steps below to run the app in your local environment.
 
