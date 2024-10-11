@@ -32,6 +32,7 @@ const humidityEl: HTMLParagraphElement = document.getElementById(
 const feedbackEl: HTMLParagraphElement = document.getElementById('feedback') as HTMLParagraphElement;
 //make sure feedback is in red
 feedbackEl.style.color = "red";
+feedbackEl.style.textAlign = "center";
 /*
 
 API Calls
@@ -159,7 +160,7 @@ const renderSearchHistory = async (searchHistory: any) => {
 
     if (!historyList.length) {
       searchHistoryContainer.innerHTML =
-        '<p class="text-center">No Previous Search History</p>';
+        '<p class="text-center mx-auto">No Previous Search History</p>';
     }
 
     // * Start at end of history array and count down to show the most recent cities at the top.
