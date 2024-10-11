@@ -28,6 +28,10 @@ const humidityEl: HTMLParagraphElement = document.getElementById(
   'humidity'
 ) as HTMLParagraphElement;
 
+//ref to feedback paragraph
+const feedbackEl: HTMLParagraphElement = document.getElementById('feedback') as HTMLParagraphElement;
+//make sure feedback is in red
+feedbackEl.style.color = "red";
 /*
 
 API Calls
@@ -35,7 +39,7 @@ API Calls
 */
 
 const fetchWeather = async (cityName: string) => {
-  console.log("front-end cityName", cityName);
+ 
   const response = await fetch('/api/weather/', {
     method: 'POST',
     headers: {
@@ -44,12 +48,19 @@ const fetchWeather = async (cityName: string) => {
     body: JSON.stringify({ cityName }),
   });
 
-  const weatherData = await response.json();
+  try {
+    const weatherData = await response.json();
 
-  console.log('weatherData: ', weatherData);
+  //console.log('weatherData: ', weatherData);
 
-  renderCurrentWeather(weatherData[0]);
-  renderForecast(weatherData.slice(1));
+  if(!(weatherData instanceof Error)){
+    renderCurrentWeather(weatherData[0]);
+   renderForecast(weatherData.slice(1));
+  }
+  } catch (error) {
+    console.log(error);
+    throw new Error('City cannot be blank');
+  }
 };
 
 const fetchSearchHistory = async () => {
@@ -254,14 +265,19 @@ const handleSearchFormSubmit = (event: any): void => {
   event.preventDefault();
 
   if (!searchInput.value) {
+    feedbackEl.textContent = 'City cannot be blank!';
     throw new Error('City cannot be blank');
   }
 
   const search: string = searchInput.value.trim();
   fetchWeather(search).then(() => {
-    getAndRenderHistory();
+  getAndRenderHistory();
+  }).catch(() => {
+    feedbackEl.textContent = 'City was not found! try a different city.';
+    throw new Error('City was not found!');
   });
   searchInput.value = '';
+  feedbackEl.textContent = '';
 };
 
 const handleSearchHistoryClick = (event: any) => {

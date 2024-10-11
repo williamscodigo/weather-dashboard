@@ -13,13 +13,14 @@ router.post('/', async (req: Request, res: Response) => {
   const { cityName } = req.body;
  
   if(req.body) {
-    //than set city property value
+    try {
+      //than set city property value
     weatherService.set(cityName);
 
-    //get coordinates - lat and lon
-    const coordinates = await weatherService.getCoodinates();
+      //get coordinates - lat and lon
+      const coordinates = await weatherService.getCoodinates();
 
-    //get weather data
+      //get weather data
     const data = await weatherService.getData(coordinates[0].lat, coordinates[0].lon);
 
     //add city to history
@@ -28,6 +29,12 @@ router.post('/', async (req: Request, res: Response) => {
     
     //respond with data 
     res.json(data);
+
+    } catch (error) {
+      if(error) {
+        res.json(new Error("api error for given city name!"));
+      }
+    }
 
   }else {
       res.send('request error!');
